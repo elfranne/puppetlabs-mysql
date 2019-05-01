@@ -7,11 +7,26 @@ class mysql::server::config {
 
   $options = $mysql::server::options
   $includedir = $mysql::server::includedir
+  $managed_dirs = $mysql::server::managed_dirs
 
   File {
     owner  => 'root',
     group  => $mysql::server::root_group,
     mode   => '0400',
+  }
+
+  if $managed_dirs {
+    $managed_dirs.each | $dir | {
+      if ( $options['mysqld']["${dir}"] and $options['mysqld']["${dir}"] != '/usr' and $options['mysqld']["${dir}"] != '/tmp' ) {
+        file {"${dir}-managed_dir":
+          ensure => directory,
+          path   => $options['mysqld']["${dir}"],
+          mode   => '0755',
+          owner  => $options['mysqld']['user'],
+          group  => $options['mysqld']['user'],
+        }
+      }
+    }
   }
 
   if $includedir and $includedir != '' {
