@@ -3,10 +3,25 @@
 #
 # @api private
 #
-class mysql::server::binarylog {
+class mysql::server::managed_dirs {
 
   $options = $mysql::server::options
   $includedir = $mysql::server::includedir
+  $managed_dirs = $mysql::server::managed_dirs
+
+  if $managed_dirs {
+    $managed_dirs.each | $dir | {
+      if ( $options['mysqld']["${dir}"] and $options['mysqld']["${dir}"] != '/usr' and $options['mysqld']["${dir}"] != '/tmp' ) {
+        file {"${dir}-managed_dir":
+          ensure => directory,
+          path   => $options['mysqld']["${dir}"],
+          mode   => '0755',
+          owner  => $options['mysqld']['user'],
+          group  => $options['mysqld']['user'],
+        }
+      }
+    }
+  }
 
   $logbin = pick($options['mysqld']['log-bin'], $options['mysqld']['log_bin'], false)
 
