@@ -122,7 +122,7 @@ class mysql::server (
 
   include '::mysql::server::config'
   include '::mysql::server::install'
-  include '::mysql::server::binarylog'
+  include '::mysql::server::managed_dirs'
   include '::mysql::server::installdb'
   include '::mysql::server::service'
   include '::mysql::server::root_password'
