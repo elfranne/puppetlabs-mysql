@@ -11,7 +11,7 @@ class mysql::server::managed_dirs {
 
   if $managed_dirs {
     $managed_dirs.each | $entry | {
-      $dir = $options['mysqld']["${entry}"] || false
+      $dir = $options['mysqld']["${entry}"] or false
       if ( $dir and $dir != '/usr' and $dir != '/tmp' ) {
         file {"${entry}-managed_dir":
           ensure => directory,
