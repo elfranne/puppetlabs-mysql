@@ -9,6 +9,7 @@ class mysql::server::managed_dirs {
   $includedir = $mysql::server::includedir
   $managed_dirs = $mysql::server::managed_dirs
 
+  #Debian: Fix permission on directories
   if $managed_dirs {
     $managed_dirs.each | $entry | {
       $dir = $options['mysqld']["${entry}"]
